@@ -4,8 +4,9 @@ services:
     name: warevision-backend
     env: node
     plan: free
-    buildCommand: cd backend && npm ci
-    startCommand: cd backend && npm start
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -19,11 +20,15 @@ services:
         fromGroup: warevision-env
     healthCheckPath: /health
     autoDeploy: true
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 03e2ff8d94c2121e440e5f02c25950a8541f3509
 envVarGroups:
   - name: warevision-env
     envVars:
       - key: JWT_SECRET
         generateValue: true
       - key: SESSION_SECRET
-        generateValue: true 
+        generateValue: true
