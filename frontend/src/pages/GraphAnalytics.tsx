@@ -309,7 +309,7 @@ const GraphAnalytics: React.FC = () => {
     }
   }, []);
 
-  const getStatusText = useCallback((status: string) => {
+  // const getStatusText = useCallback((status: string) => {
     switch (status) {
       case 'passed': return 'Пройден';
       case 'warning': return 'Требует внимания';

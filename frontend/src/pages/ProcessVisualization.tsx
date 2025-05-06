@@ -13,18 +13,18 @@ const FALLBACK_TEMPLATE = `<?xml version="1.0" encoding="UTF-8"?>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Начало процесса">
       <bpmn:outgoing>SequenceFlow_1yjbz40</bpmn:outgoing>
-    </bpmn:startEvent>
+      </bpmn:startEvent>
     <bpmn:task id="Task_1" name="Проверка клиента">
       <bpmn:incoming>SequenceFlow_1yjbz40</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0h5w0cd</bpmn:outgoing>
-    </bpmn:task>
+      </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1yjbz40" sourceRef="StartEvent_1" targetRef="Task_1" />
     <bpmn:endEvent id="EndEvent_1" name="Завершение процесса">
       <bpmn:incoming>SequenceFlow_0h5w0cd</bpmn:incoming>
-    </bpmn:endEvent>
+      </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0h5w0cd" sourceRef="Task_1" targetRef="EndEvent_1" />
-  </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    </bpmn:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
@@ -49,12 +49,12 @@ const FALLBACK_TEMPLATE = `<?xml version="1.0" encoding="UTF-8"?>
         <di:waypoint x="370" y="117" />
         <di:waypoint x="432" y="117" />
       </bpmndi:BPMNEdge>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
+      </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 
 // Process template paths
-const PROCESS_TEMPLATES = {
+// const PROCESS_TEMPLATES = {
   clientVerification: './bpmn-templates/client-verification.bpmn',
   fraudDetection: './bpmn-templates/fraud-detection.bpmn',
   disputeResolution: './bpmn-templates/dispute-resolution.bpmn'
@@ -90,9 +90,9 @@ const ProcessVisualization: React.FC = () => {
         // Update the preloaded template and current XML
         preloadedTemplates[templateKey as keyof typeof preloadedTemplates] = templateData;
         setProcessXml(templateData);
-        setError(null);
+            setError(null);
         console.log(`Successfully loaded BPMN template: ${templateKey}`);
-      } else {
+        } else {
         console.warn(`Template ${templateKey} missing required BPMN elements`);
         setProcessXml(FALLBACK_TEMPLATE);
         setError(`Структура шаблона ${templateKey} некорректна. Используется базовый шаблон.`);

@@ -13,8 +13,6 @@ import {
   ClusterOutlined,
   LineChartOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
-  WarningOutlined,
   InfoCircleOutlined,
   SyncOutlined
 } from '@ant-design/icons';
