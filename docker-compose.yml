@@ -1,0 +1,199 @@
+version: '3.8'
+
+services:
+  # Фронтенд-приложение
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    ports:
+      - "80:80"
+    environment:
+      - API_URL=http://api.warevision-antifraud.example.com
+      - ENV=production
+      - APP_VERSION=1.0.0
+    restart: always
+    depends_on:
+      - api_gateway
+
+  # API Gateway
+  api_gateway:
+    build:
+      context: ./backend
+      dockerfile: api_gateway/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-your_jwt_secret_key}
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+
+  # База данных PostgreSQL
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-crafd}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crafd_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-crafd_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+  # Redis для кэширования
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - redis_data:/data
+
+  # Модуль идентификации
+  identification:
+    build:
+      context: ./backend
+      dockerfile: identification/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - api_gateway
+
+  # Модуль проверки по спискам
+  list_checker:
+    build:
+      context: ./backend
+      dockerfile: list_checker/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - api_gateway
+
+  # Модуль скоринга
+  scoring:
+    build:
+      context: ./backend
+      dockerfile: scoring/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+      - api_gateway
+
+  # Модуль мониторинга
+  monitoring:
+    build:
+      context: ./backend
+      dockerfile: monitoring/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+      - api_gateway
+
+  # Модуль интеграции
+  integration:
+    build:
+      context: ./backend
+      dockerfile: integration/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - api_gateway
+
+  # Модуль инцидентов
+  incident:
+    build:
+      context: ./backend
+      dockerfile: incident/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - api_gateway
+
+  # Модуль графовой аналитики
+  graph:
+    build:
+      context: ./backend
+      dockerfile: graph/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - NEO4J_URI=bolt://neo4j:7687
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - neo4j
+      - api_gateway
+
+  # База данных Neo4j для графовой аналитики
+  neo4j:
+    image: neo4j:4.4
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-neo4j_password}
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+    restart: always
+
+  # Модуль аналитики
+  analytics:
+    build:
+      context: ./backend
+      dockerfile: analytics/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://crafd:crafd_secret@postgres:5432/crafd_db
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - postgres
+      - api_gateway
+
+  # NGINX для проксирования запросов
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/logs:/var/log/nginx
+    restart: always
+    depends_on:
+      - frontend
+      - api_gateway
+
+volumes:
+  postgres_data:
+  redis_data:
+  neo4j_data: 

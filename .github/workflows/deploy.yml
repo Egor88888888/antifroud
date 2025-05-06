@@ -1,0 +1,81 @@
+name: Deploy WareVision Anti-Fraud System
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+        env:
+          REACT_APP_API_URL: ${{ secrets.API_URL }}
+          REACT_APP_ENV: production
+      
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/warevision-frontend:latest
+      
+      - name: Build and push backend images
+        run: |
+          # Сборка и отправка бэкенд-микросервисов
+          for service in api_gateway identification list_checker scoring monitoring integration incident graph analytics; do
+            docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/warevision-$service:latest ./backend/$service
+            docker push ${{ secrets.DOCKER_HUB_USERNAME }}/warevision-$service:latest
+          done
+      
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /opt/warevision
+            git pull
+            cp .env.production .env
+            docker-compose pull
+            docker-compose up -d
+            docker system prune -f
+      
+      - name: Notify deployment status
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: deployments
+          SLACK_TITLE: Deployment Status
+          SLACK_MESSAGE: 'WareVision Anti-Fraud System has been deployed successfully!'
+          SLACK_COLOR: ${{ job.status }} 

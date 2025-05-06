@@ -1,0 +1,66 @@
+/* Базовые стили с использованием фирменного стиля CRAFD */
+
+body {
+  margin: 0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #333333;
+  background-color: #f0f2f5;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Фирменные цвета */
+:root {
+  --primary-color: #004B85;     /* Основной фирменный: темно-синий */
+  --secondary-color: #8EC0FF;   /* Дополнительный: голубой */
+  --accent-color: #CAFF85;      /* Акцентный: салатовый */
+  --background-color: #FFFFFF;  /* Фон: белый */
+  --text-color: #333333;        /* Текст: темно-серый */
+}
+
+/* Стили для заголовков */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+/* Кастомизация компонентов Ant Design */
+.ant-btn-primary {
+  background-color: var(--primary-color);
+}
+
+.ant-menu-item-selected {
+  background-color: #e6f7ff !important;
+  color: var(--primary-color) !important;
+}
+
+.ant-menu-item:hover {
+  color: var(--secondary-color) !important;
+}
+
+/* Карточки */
+.ant-card {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Статусы */
+.status-high {
+  color: #f44336;
+}
+
+.status-medium {
+  color: #ff9800;
+}
+
+.status-low {
+  color: #4caf50;
+} 

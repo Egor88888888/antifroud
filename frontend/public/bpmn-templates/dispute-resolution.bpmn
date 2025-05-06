@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_DisputeResolution" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="DisputeResolutionProcess" name="Процесс разрешения споров" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Регистрация обращения клиента">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    
+    <bpmn:task id="Task_RegisterCase" name="Регистрация обращения в системе">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:task id="Task_InitialReview" name="Первичный анализ обращения">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_DisputeType" name="Тип спора">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_TransactionDispute</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ServiceDispute</bpmn:outgoing>
+      <bpmn:outgoing>Flow_TechnicalIssue</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_TransactionInvestigation" name="Расследование транзакции">
+      <bpmn:incoming>Flow_TransactionDispute</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:task id="Task_ServiceInvestigation" name="Проверка качества обслуживания">
+      <bpmn:incoming>Flow_ServiceDispute</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:task id="Task_TechnicalSupport" name="Технический анализ проблемы">
+      <bpmn:incoming>Flow_TechnicalIssue</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_Merge1" name="Объединение потоков">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_EvaluateDisputeCase" name="Оценка требований клиента">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_Decision" name="Решение по спору">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_Satisfy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Reject</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PartialSatisfy</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_SatisfyRequest" name="Полное удовлетворение требований">
+      <bpmn:incoming>Flow_Satisfy</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:task id="Task_PartialSatisfyRequest" name="Частичное удовлетворение">
+      <bpmn:incoming>Flow_PartialSatisfy</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:task id="Task_RejectRequest" name="Отказ в удовлетворении требований">
+      <bpmn:incoming>Flow_Reject</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_Merge2" name="Объединение решений">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_NotifyClient" name="Уведомление клиента о решении">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:task id="Task_CloseDispute" name="Закрытие спора">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:task>
+    
+    <bpmn:endEvent id="EndEvent_1" name="Спор разрешен">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_RegisterCase" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_RegisterCase" targetRef="Task_InitialReview" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_InitialReview" targetRef="Gateway_DisputeType" />
+    <bpmn:sequenceFlow id="Flow_TransactionDispute" name="Спор по транзакции" sourceRef="Gateway_DisputeType" targetRef="Task_TransactionInvestigation" />
+    <bpmn:sequenceFlow id="Flow_ServiceDispute" name="Претензия к сервису" sourceRef="Gateway_DisputeType" targetRef="Task_ServiceInvestigation" />
+    <bpmn:sequenceFlow id="Flow_TechnicalIssue" name="Техническая проблема" sourceRef="Gateway_DisputeType" targetRef="Task_TechnicalSupport" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_TransactionInvestigation" targetRef="Gateway_Merge1" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_ServiceInvestigation" targetRef="Gateway_Merge1" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_TechnicalSupport" targetRef="Gateway_Merge1" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_Merge1" targetRef="Task_EvaluateDisputeCase" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_EvaluateDisputeCase" targetRef="Gateway_Decision" />
+    <bpmn:sequenceFlow id="Flow_Satisfy" name="Удовлетворить" sourceRef="Gateway_Decision" targetRef="Task_SatisfyRequest" />
+    <bpmn:sequenceFlow id="Flow_PartialSatisfy" name="Частично удовлетворить" sourceRef="Gateway_Decision" targetRef="Task_PartialSatisfyRequest" />
+    <bpmn:sequenceFlow id="Flow_Reject" name="Отказать" sourceRef="Gateway_Decision" targetRef="Task_RejectRequest" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_SatisfyRequest" targetRef="Gateway_Merge2" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_PartialSatisfyRequest" targetRef="Gateway_Merge2" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Task_RejectRequest" targetRef="Gateway_Merge2" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Gateway_Merge2" targetRef="Task_NotifyClient" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Task_NotifyClient" targetRef="Task_CloseDispute" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_CloseDispute" targetRef="EndEvent_1" />
+  </bpmn:process>
+  
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DisputeResolutionProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="134" y="275" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_RegisterCase_di" bpmnElement="Task_RegisterCase">
+        <dc:Bounds x="240" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_InitialReview_di" bpmnElement="Task_InitialReview">
+        <dc:Bounds x="390" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_DisputeType_di" bpmnElement="Gateway_DisputeType" isMarkerVisible="true">
+        <dc:Bounds x="545" y="225" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="547" y="195" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_TransactionInvestigation_di" bpmnElement="Task_TransactionInvestigation">
+        <dc:Bounds x="650" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_ServiceInvestigation_di" bpmnElement="Task_ServiceInvestigation">
+        <dc:Bounds x="650" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_TechnicalSupport_di" bpmnElement="Task_TechnicalSupport">
+        <dc:Bounds x="650" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_Merge1_di" bpmnElement="Gateway_Merge1" isMarkerVisible="true">
+        <dc:Bounds x="805" y="225" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="786" y="195" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_EvaluateDisputeCase_di" bpmnElement="Task_EvaluateDisputeCase">
+        <dc:Bounds x="910" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_Decision_di" bpmnElement="Gateway_Decision" isMarkerVisible="true">
+        <dc:Bounds x="1065" y="225" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1046" y="195" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_SatisfyRequest_di" bpmnElement="Task_SatisfyRequest">
+        <dc:Bounds x="1170" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_PartialSatisfyRequest_di" bpmnElement="Task_PartialSatisfyRequest">
+        <dc:Bounds x="1170" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_RejectRequest_di" bpmnElement="Task_RejectRequest">
+        <dc:Bounds x="1170" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_Merge2_di" bpmnElement="Gateway_Merge2" isMarkerVisible="true">
+        <dc:Bounds x="1325" y="225" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1305" y="195" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_NotifyClient_di" bpmnElement="Task_NotifyClient">
+        <dc:Bounds x="1430" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_CloseDispute_di" bpmnElement="Task_CloseDispute">
+        <dc:Bounds x="1590" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1752" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1733" y="275" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Flow connections -->
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="188" y="250" />
+        <di:waypoint x="240" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="340" y="250" />
+        <di:waypoint x="390" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="490" y="250" />
+        <di:waypoint x="545" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_TransactionDispute_di" bpmnElement="Flow_TransactionDispute">
+        <di:waypoint x="570" y="225" />
+        <di:waypoint x="570" y="150" />
+        <di:waypoint x="650" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="575" y="164" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_ServiceDispute_di" bpmnElement="Flow_ServiceDispute">
+        <di:waypoint x="595" y="250" />
+        <di:waypoint x="650" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="585" y="213" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_TechnicalIssue_di" bpmnElement="Flow_TechnicalIssue">
+        <di:waypoint x="570" y="275" />
+        <di:waypoint x="570" y="350" />
+        <di:waypoint x="650" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="573" y="323" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="750" y="150" />
+        <di:waypoint x="830" y="150" />
+        <di:waypoint x="830" y="225" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="750" y="250" />
+        <di:waypoint x="805" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="750" y="350" />
+        <di:waypoint x="830" y="350" />
+        <di:waypoint x="830" y="275" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="855" y="250" />
+        <di:waypoint x="910" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1010" y="250" />
+        <di:waypoint x="1065" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Satisfy_di" bpmnElement="Flow_Satisfy">
+        <di:waypoint x="1090" y="225" />
+        <di:waypoint x="1090" y="150" />
+        <di:waypoint x="1170" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1075" y="163" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_PartialSatisfy_di" bpmnElement="Flow_PartialSatisfy">
+        <di:waypoint x="1115" y="250" />
+        <di:waypoint x="1170" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1103" y="217" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Reject_di" bpmnElement="Flow_Reject">
+        <di:waypoint x="1090" y="275" />
+        <di:waypoint x="1090" y="350" />
+        <di:waypoint x="1170" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1091" y="323" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1270" y="150" />
+        <di:waypoint x="1350" y="150" />
+        <di:waypoint x="1350" y="225" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="1270" y="250" />
+        <di:waypoint x="1325" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="1270" y="350" />
+        <di:waypoint x="1350" y="350" />
+        <di:waypoint x="1350" y="275" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1375" y="250" />
+        <di:waypoint x="1430" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="1530" y="250" />
+        <di:waypoint x="1590" y="250" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="1690" y="250" />
+        <di:waypoint x="1752" y="250" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

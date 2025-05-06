@@ -1,0 +1,11 @@
+fastapi==0.68.0
+uvicorn==0.15.0
+sqlalchemy==2.0.23
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.5
+requests==2.31.0
+pydantic==1.10.13
+camunda-external-task-client-python==4.0.0
+bpmn-python==0.2.0
+graphviz==0.20.1 

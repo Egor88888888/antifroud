@@ -1,0 +1,559 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CRAFD API",
+    "description": "API для демонстрационной версии системы CRAFD",
+    "version": "1.0.0",
+    "contact": {
+      "email": "support@crafd.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api",
+      "description": "Локальный сервер разработки"
+    }
+  ],
+  "tags": [
+    {
+      "name": "incidents",
+      "description": "API для работы с инцидентами"
+    },
+    {
+      "name": "clients",
+      "description": "API для работы с клиентами"
+    },
+    {
+      "name": "analytics",
+      "description": "API для получения аналитики"
+    }
+  ],
+  "paths": {
+    "/incidents": {
+      "get": {
+        "tags": ["incidents"],
+        "summary": "Получить список всех инцидентов",
+        "operationId": "getAllIncidents",
+        "responses": {
+          "200": {
+            "description": "Список инцидентов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Incident"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["incidents"],
+        "summary": "Создать новый инцидент",
+        "operationId": "createIncident",
+        "requestBody": {
+          "description": "Данные инцидента",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncidentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Инцидент создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Incident"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incidents/{id}": {
+      "get": {
+        "tags": ["incidents"],
+        "summary": "Получить инцидент по ID",
+        "operationId": "getIncidentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID инцидента",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные инцидента",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Incident"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Инцидент не найден"
+          }
+        }
+      },
+      "put": {
+        "tags": ["incidents"],
+        "summary": "Обновить инцидент",
+        "operationId": "updateIncident",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID инцидента",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Данные для обновления инцидента",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncidentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Инцидент обновлен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Incident"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Инцидент не найден"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["incidents"],
+        "summary": "Удалить инцидент",
+        "operationId": "deleteIncident",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID инцидента",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Инцидент удален"
+          },
+          "404": {
+            "description": "Инцидент не найден"
+          }
+        }
+      }
+    },
+    "/clients": {
+      "get": {
+        "tags": ["clients"],
+        "summary": "Получить список всех клиентов",
+        "operationId": "getAllClients",
+        "responses": {
+          "200": {
+            "description": "Список клиентов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Client"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clients/{id}": {
+      "get": {
+        "tags": ["clients"],
+        "summary": "Получить клиента по ID",
+        "operationId": "getClientById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID клиента",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные клиента",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Client"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Клиент не найден"
+          }
+        }
+      }
+    },
+    "/clients/search": {
+      "get": {
+        "tags": ["clients"],
+        "summary": "Поиск клиентов",
+        "operationId": "searchClients",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Поисковый запрос",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Результаты поиска",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Client"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/dashboard": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Получить данные для дашборда",
+        "operationId": "getDashboardData",
+        "responses": {
+          "200": {
+            "description": "Данные дашборда",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/risks": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Получить данные по рискам",
+        "operationId": "getRisksData",
+        "responses": {
+          "200": {
+            "description": "Данные по рискам",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Risks"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Incident": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Уникальный идентификатор инцидента"
+          },
+          "client_id": {
+            "type": "integer",
+            "description": "ID клиента, связанного с инцидентом"
+          },
+          "type": {
+            "type": "string",
+            "description": "Тип инцидента"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["open", "in_progress", "closed"],
+            "description": "Статус инцидента"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "Приоритет инцидента"
+          },
+          "description": {
+            "type": "string",
+            "description": "Описание инцидента"
+          },
+          "assignedTo": {
+            "type": "string",
+            "description": "Кому назначен инцидент"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Решение по инциденту"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата и время создания"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата и время обновления"
+          }
+        }
+      },
+      "IncidentInput": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "integer",
+            "description": "ID клиента"
+          },
+          "type": {
+            "type": "string",
+            "description": "Тип инцидента"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["open", "in_progress", "closed"],
+            "description": "Статус инцидента"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "Приоритет инцидента"
+          },
+          "description": {
+            "type": "string",
+            "description": "Описание инцидента"
+          },
+          "assignedTo": {
+            "type": "string",
+            "description": "Кому назначен инцидент"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Решение по инциденту"
+          }
+        },
+        "required": ["client_id", "type", "status", "priority", "description"]
+      },
+      "Client": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Уникальный идентификатор клиента"
+          },
+          "name": {
+            "type": "string",
+            "description": "ФИО клиента"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Дата рождения"
+          },
+          "passport": {
+            "type": "string",
+            "description": "Номер паспорта"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Телефон"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email"
+          },
+          "riskLevel": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "Уровень риска"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "pending", "blocked"],
+            "description": "Статус клиента"
+          },
+          "lastActivity": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Последняя активность"
+          },
+          "address": {
+            "type": "string",
+            "description": "Адрес"
+          }
+        }
+      },
+      "Dashboard": {
+        "type": "object",
+        "properties": {
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "totalClients": {
+                "type": "integer",
+                "description": "Общее количество клиентов"
+              },
+              "openIncidents": {
+                "type": "integer",
+                "description": "Количество открытых инцидентов"
+              },
+              "highRiskClients": {
+                "type": "integer",
+                "description": "Количество клиентов с высоким риском"
+              },
+              "blockedAccounts": {
+                "type": "integer",
+                "description": "Количество заблокированных аккаунтов"
+              },
+              "detectionRate": {
+                "type": "number",
+                "format": "float",
+                "description": "Коэффициент выявления"
+              }
+            }
+          },
+          "incidentTrends": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "incidentTypes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "riskDistribution": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "level": {
+                  "type": "string"
+                },
+                "percentage": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Risks": {
+        "type": "object",
+        "properties": {
+          "riskFactors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "ID фактора риска"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Название фактора"
+                },
+                "weight": {
+                  "type": "integer",
+                  "description": "Вес фактора (в процентах)"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["passed", "warning", "failed"],
+                  "description": "Статус проверки"
+                }
+              }
+            }
+          },
+          "overallScore": {
+            "type": "integer",
+            "description": "Общий скоринг (в процентах)"
+          },
+          "recommendation": {
+            "type": "string",
+            "description": "Рекомендация по результатам проверки"
+          }
+        }
+      }
+    }
+  }
+} 

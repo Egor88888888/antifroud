@@ -1,0 +1,179 @@
+/* BPMN Editor Styles */
+.bpmn-editor-container {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Improve diagram appearance */
+.djs-container {
+  --diagram-background-color: #fafafa;
+  --diagram-grid-color: #e0e0e0;
+  --diagram-shape-stroke-color: #004B85;
+  --diagram-shape-fill-color: #f5f9ff;
+  --diagram-task-color: #004B85;
+  --diagram-event-color: #3aa655;
+  --diagram-gateway-color: #ff9800;
+}
+
+/* Custom diagram styles */
+.djs-container .djs-visual {
+  transition: all 0.2s ease;
+}
+
+/* Task styling */
+.djs-container .bpmn-icon-task {
+  fill: var(--diagram-shape-fill-color) !important;
+  stroke: var(--diagram-task-color) !important;
+  stroke-width: 2px !important;
+}
+
+/* Event styling */
+.djs-container .bpmn-icon-start-event,
+.djs-container .bpmn-icon-end-event {
+  stroke: var(--diagram-event-color) !important;
+  stroke-width: 2px !important;
+}
+
+/* Gateway styling */
+.djs-container .bpmn-icon-gateway-xor {
+  stroke: var(--diagram-gateway-color) !important;
+  stroke-width: 2px !important;
+}
+
+/* Flow styling */
+.djs-connection {
+  stroke-width: 2px !important;
+}
+
+/* Selection styling */
+.djs-container .selected {
+  stroke: #1890ff !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 4px rgba(24, 144, 255, 0.3));
+}
+
+/* Grid styling */
+.with-grid {
+  background-image: linear-gradient(var(--diagram-grid-color) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--diagram-grid-color) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Properties panel styling */
+.bpp-properties-panel {
+  border-left: 1px solid #d9d9d9;
+  background-color: #fafafa;
+  font-family: 'Roboto', sans-serif;
+}
+
+.bpp-properties-panel .bpp-field-description {
+  color: #666;
+  font-style: italic;
+}
+
+/* Dark mode styles */
+.dark-mode .djs-container {
+  --diagram-background-color: #1f1f1f;
+  --diagram-grid-color: #333;
+  --diagram-shape-stroke-color: #4096ff;
+  --diagram-shape-fill-color: #141414;
+  --diagram-task-color: #4096ff;
+  --diagram-event-color: #52c41a;
+  --diagram-gateway-color: #fa8c16;
+}
+
+.dark-mode .with-grid {
+  background-image: linear-gradient(var(--diagram-grid-color) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--diagram-grid-color) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.dark-mode .djs-palette {
+  background-color: #141414;
+  border-color: #333;
+}
+
+.dark-mode .djs-palette .entry {
+  color: #fff;
+}
+
+.dark-mode .bpp-properties-panel {
+  background-color: #141414;
+  border-color: #333;
+  color: #fff;
+}
+
+.dark-mode .bpp-properties-panel input,
+.dark-mode .bpp-properties-panel select,
+.dark-mode .bpp-properties-panel textarea {
+  background-color: #1f1f1f;
+  border-color: #333;
+  color: #fff;
+}
+
+/* Animation effects */
+@keyframes highlight-pulse {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(0, 75, 133, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(0, 75, 133, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(0, 75, 133, 0.3));
+  }
+}
+
+.djs-container .djs-visual:hover {
+  animation: highlight-pulse 1.5s infinite;
+}
+
+/* Custom markers */
+.djs-container .highlight-task .djs-visual rect {
+  stroke: #ff4d4f !important;
+  stroke-width: 3px !important;
+  animation: highlight-pulse 1.5s infinite;
+}
+
+.djs-container .highlight-path .djs-visual path {
+  stroke: #ff4d4f !important;
+  stroke-width: 3px !important;
+  marker-end: url(#sequenceflow-end-marker-highlighted);
+  animation: highlight-pulse 1.5s infinite;
+}
+
+/* Contextual actions toolbar */
+.bpmn-contextual-toolbar {
+  position: absolute;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 4px;
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+}
+
+.dark-mode .bpmn-contextual-toolbar {
+  background: #1f1f1f;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Palette customization */
+.djs-palette {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid #d9d9d9;
+}
+
+.djs-palette .entry {
+  border-radius: 2px;
+  margin-bottom: 2px;
+}
+
+.djs-palette .entry:hover {
+  background-color: #f0f5ff;
+}
+
+.dark-mode .djs-palette .entry:hover {
+  background-color: #141414;
+} 

@@ -1,0 +1,157 @@
+/* Process Simulator Styles */
+.process-simulator-container {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Canvas styling */
+.simulator-canvas-card {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* BPMN elements highlighting styles */
+.highlight-waiting .djs-visual > :nth-child(1) {
+  stroke: #d9d9d9 !important;
+  fill: #f9f9f9 !important;
+  stroke-width: 2px !important;
+}
+
+.highlight-active .djs-visual > :nth-child(1) {
+  stroke: #1890ff !important;
+  fill: #e6f7ff !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 4px rgba(24, 144, 255, 0.5));
+  animation: pulse-blue 1.5s infinite;
+}
+
+.highlight-completed .djs-visual > :nth-child(1) {
+  stroke: #52c41a !important;
+  fill: #f6ffed !important;
+  stroke-width: 2px !important;
+}
+
+.highlight-error .djs-visual > :nth-child(1) {
+  stroke: #f5222d !important;
+  fill: #fff1f0 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 4px rgba(245, 34, 45, 0.5));
+}
+
+/* Path highlight styles */
+.highlight-path-inactive .djs-visual > :nth-child(1) {
+  stroke: #d9d9d9 !important;
+  stroke-width: 1px !important;
+}
+
+.highlight-path-active .djs-visual > :nth-child(1) {
+  stroke: #1890ff !important;
+  stroke-width: 2px !important;
+  animation: flow-blue 1s infinite linear;
+  stroke-dasharray: 5;
+}
+
+.highlight-path-completed .djs-visual > :nth-child(1) {
+  stroke: #52c41a !important;
+  stroke-width: 2px !important;
+}
+
+/* Simulation event log styling */
+.event-log-card {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Simulation statistics card styling */
+.simulation-stats-card {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+
+/* Scenario card styling */
+.scenario-card {
+  border: 1px solid #d9d9d9;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.scenario-card:hover {
+  border-color: #1890ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.scenario-card-selected {
+  border: 1px solid #1890ff;
+  background-color: #e6f7ff;
+  cursor: pointer;
+}
+
+/* Animation keyframes */
+@keyframes pulse-blue {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(24, 144, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(24, 144, 255, 0.8));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(24, 144, 255, 0.5));
+  }
+}
+
+@keyframes flow-blue {
+  0% {
+    stroke-dashoffset: 10;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Dark mode support */
+.dark .process-simulator-container {
+  background-color: #1f1f1f;
+  color: #fff;
+}
+
+.dark .simulator-canvas-card,
+.dark .event-log-card,
+.dark .simulation-stats-card {
+  background-color: #141414;
+  border-color: #333;
+}
+
+.dark .scenario-card {
+  background-color: #1f1f1f;
+  border-color: #333;
+}
+
+.dark .scenario-card:hover {
+  border-color: #1890ff;
+  background-color: #111d2c;
+}
+
+.dark .scenario-card-selected {
+  border-color: #1890ff;
+  background-color: #111d2c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .simulator-canvas-card {
+    height: 300px !important;
+  }
+}
+
+/* CloseCircleOutlined icon */
+.anticon-close-circle::before {
+  content: "✕";
+}
+
+/* For debugging */
+.debug-border {
+  border: 1px solid red;
+} 

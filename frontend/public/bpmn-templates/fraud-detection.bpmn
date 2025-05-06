@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_FraudDetection" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_FraudDetection" name="Процесс обнаружения мошенничества" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Получение транзакции">
+      <bpmn:outgoing>Flow_01</bpmn:outgoing>
+    </bpmn:startEvent>
+    
+    <bpmn:task id="Task_DataCollection" name="Сбор данных о транзакции">
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_02</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1-2 секунды" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_RealTimeValidation" name="Валидация в реальном времени">
+      <bpmn:incoming>Flow_02</bpmn:incoming>
+      <bpmn:outgoing>Flow_03</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="2-3 секунды" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_InitialValidation" name="Прошла начальную валидацию?">
+      <bpmn:incoming>Flow_03</bpmn:incoming>
+      <bpmn:outgoing>Flow_04a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_BlockTransaction" name="Блокировка транзакции">
+      <bpmn:incoming>Flow_04a</bpmn:incoming>
+      <bpmn:outgoing>Flow_05</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1 секунда" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:endEvent id="EndEvent_Blocked" name="Транзакция заблокирована">
+      <bpmn:incoming>Flow_05</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:task id="Task_AdvancedAnalysis" name="Расширенный анализ">
+      <bpmn:incoming>Flow_04b</bpmn:incoming>
+      <bpmn:outgoing>Flow_06</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="3-5 секунд" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_BehavioralAnalysis" name="Поведенческий анализ">
+      <bpmn:incoming>Flow_06</bpmn:incoming>
+      <bpmn:outgoing>Flow_07</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="2-4 секунды" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_PatternMatching" name="Сопоставление с шаблонами мошенничества">
+      <bpmn:incoming>Flow_07</bpmn:incoming>
+      <bpmn:outgoing>Flow_08</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="2-3 секунды" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_RiskScoring" name="Оценка риска мошенничества">
+      <bpmn:incoming>Flow_08</bpmn:incoming>
+      <bpmn:outgoing>Flow_09</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1-2 секунды" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_RiskLevel" name="Уровень риска?">
+      <bpmn:incoming>Flow_09</bpmn:incoming>
+      <bpmn:outgoing>Flow_10a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10b</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10c</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_BlockHighRisk" name="Блокировка транзакции (высокий риск)">
+      <bpmn:incoming>Flow_10a</bpmn:incoming>
+      <bpmn:outgoing>Flow_11a</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1 секунда" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_ManualReview" name="Отправка на ручную проверку">
+      <bpmn:incoming>Flow_10b</bpmn:incoming>
+      <bpmn:outgoing>Flow_11b</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1-2 минуты" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Частично" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_ApproveTransaction" name="Одобрение транзакции">
+      <bpmn:incoming>Flow_10c</bpmn:incoming>
+      <bpmn:outgoing>Flow_11c</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1 секунда" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_CreateIncident" name="Создание инцидента">
+      <bpmn:incoming>Flow_11a</bpmn:incoming>
+      <bpmn:outgoing>Flow_12a</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="2 секунды" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_NotifyCustomer" name="Уведомление клиента">
+      <bpmn:incoming>Flow_12a</bpmn:incoming>
+      <bpmn:outgoing>Flow_13a</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="5 секунд" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:endEvent id="EndEvent_BlockedHigh" name="Транзакция заблокирована (высокий риск)">
+      <bpmn:incoming>Flow_13a</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:task id="Task_HumanDecision" name="Принятие решения оператором">
+      <bpmn:incoming>Flow_11b</bpmn:incoming>
+      <bpmn:outgoing>Flow_12b</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="5-10 минут" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Нет" />
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_ApproveOrReject" name="Одобрить или отклонить?">
+      <bpmn:incoming>Flow_12b</bpmn:incoming>
+      <bpmn:outgoing>Flow_13b</bpmn:outgoing>
+      <bpmn:outgoing>Flow_13c</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_RejectTransaction" name="Отклонение транзакции">
+      <bpmn:incoming>Flow_13b</bpmn:incoming>
+      <bpmn:outgoing>Flow_14a</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1 секунда" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_ManualApprove" name="Ручное одобрение транзакции">
+      <bpmn:incoming>Flow_13c</bpmn:incoming>
+      <bpmn:outgoing>Flow_14b</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1 секунда" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:endEvent id="EndEvent_Rejected" name="Транзакция отклонена">
+      <bpmn:incoming>Flow_14a</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:task id="Task_UpdateRules" name="Обновление правил обнаружения">
+      <bpmn:incoming>Flow_14b</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="10 секунд" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:endEvent id="EndEvent_ManualApproved" name="Транзакция одобрена (вручную)">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:endEvent id="EndEvent_Approved" name="Транзакция одобрена">
+      <bpmn:incoming>Flow_11c</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <!-- Sequence Flows -->
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="StartEvent_1" targetRef="Task_DataCollection" />
+    <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_DataCollection" targetRef="Task_RealTimeValidation" />
+    <bpmn:sequenceFlow id="Flow_03" sourceRef="Task_RealTimeValidation" targetRef="Gateway_InitialValidation" />
+    <bpmn:sequenceFlow id="Flow_04a" name="Нет (явное мошенничество)" sourceRef="Gateway_InitialValidation" targetRef="Task_BlockTransaction" />
+    <bpmn:sequenceFlow id="Flow_04b" name="Да" sourceRef="Gateway_InitialValidation" targetRef="Task_AdvancedAnalysis" />
+    <bpmn:sequenceFlow id="Flow_05" sourceRef="Task_BlockTransaction" targetRef="EndEvent_Blocked" />
+    <bpmn:sequenceFlow id="Flow_06" sourceRef="Task_AdvancedAnalysis" targetRef="Task_BehavioralAnalysis" />
+    <bpmn:sequenceFlow id="Flow_07" sourceRef="Task_BehavioralAnalysis" targetRef="Task_PatternMatching" />
+    <bpmn:sequenceFlow id="Flow_08" sourceRef="Task_PatternMatching" targetRef="Task_RiskScoring" />
+    <bpmn:sequenceFlow id="Flow_09" sourceRef="Task_RiskScoring" targetRef="Gateway_RiskLevel" />
+    <bpmn:sequenceFlow id="Flow_10a" name="Высокий" sourceRef="Gateway_RiskLevel" targetRef="Task_BlockHighRisk" />
+    <bpmn:sequenceFlow id="Flow_10b" name="Средний" sourceRef="Gateway_RiskLevel" targetRef="Task_ManualReview" />
+    <bpmn:sequenceFlow id="Flow_10c" name="Низкий" sourceRef="Gateway_RiskLevel" targetRef="Task_ApproveTransaction" />
+    <bpmn:sequenceFlow id="Flow_11a" sourceRef="Task_BlockHighRisk" targetRef="Task_CreateIncident" />
+    <bpmn:sequenceFlow id="Flow_11b" sourceRef="Task_ManualReview" targetRef="Task_HumanDecision" />
+    <bpmn:sequenceFlow id="Flow_11c" sourceRef="Task_ApproveTransaction" targetRef="EndEvent_Approved" />
+    <bpmn:sequenceFlow id="Flow_12a" sourceRef="Task_CreateIncident" targetRef="Task_NotifyCustomer" />
+    <bpmn:sequenceFlow id="Flow_12b" sourceRef="Task_HumanDecision" targetRef="Gateway_ApproveOrReject" />
+    <bpmn:sequenceFlow id="Flow_13a" sourceRef="Task_NotifyCustomer" targetRef="EndEvent_BlockedHigh" />
+    <bpmn:sequenceFlow id="Flow_13b" name="Отклонить" sourceRef="Gateway_ApproveOrReject" targetRef="Task_RejectTransaction" />
+    <bpmn:sequenceFlow id="Flow_13c" name="Одобрить" sourceRef="Gateway_ApproveOrReject" targetRef="Task_ManualApprove" />
+    <bpmn:sequenceFlow id="Flow_14a" sourceRef="Task_RejectTransaction" targetRef="EndEvent_Rejected" />
+    <bpmn:sequenceFlow id="Flow_14b" sourceRef="Task_ManualApprove" targetRef="Task_UpdateRules" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_UpdateRules" targetRef="EndEvent_ManualApproved" />
+  </bpmn:process>
+  
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_FraudDetection">
+      <!-- Start Event -->
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="279" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="322" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Data Collection -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_DataCollection" bpmnElement="Task_DataCollection">
+        <dc:Bounds x="270" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Real-Time Validation -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_RealTimeValidation" bpmnElement="Task_RealTimeValidation">
+        <dc:Bounds x="430" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Gateway: Initial Validation -->
+      <bpmndi:BPMNShape id="BPMNShape_Gateway_InitialValidation" bpmnElement="Gateway_InitialValidation" isMarkerVisible="true">
+        <dc:Bounds x="585" y="272" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="571" y="242" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Block Transaction -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_BlockTransaction" bpmnElement="Task_BlockTransaction">
+        <dc:Bounds x="690" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- End Event: Blocked -->
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_Blocked" bpmnElement="EndEvent_Blocked">
+        <dc:Bounds x="850" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="841" y="165" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Advanced Analysis -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_AdvancedAnalysis" bpmnElement="Task_AdvancedAnalysis">
+        <dc:Bounds x="690" y="364" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Behavioral Analysis -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_BehavioralAnalysis" bpmnElement="Task_BehavioralAnalysis">
+        <dc:Bounds x="830" y="364" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Pattern Matching -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_PatternMatching" bpmnElement="Task_PatternMatching">
+        <dc:Bounds x="970" y="364" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Risk Scoring -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_RiskScoring" bpmnElement="Task_RiskScoring">
+        <dc:Bounds x="1110" y="364" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Gateway: Risk Level -->
+      <bpmndi:BPMNShape id="BPMNShape_Gateway_RiskLevel" bpmnElement="Gateway_RiskLevel" isMarkerVisible="true">
+        <dc:Bounds x="1265" y="379" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1254" y="349" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Block High Risk -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_BlockHighRisk" bpmnElement="Task_BlockHighRisk">
+        <dc:Bounds x="1370" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Manual Review -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_ManualReview" bpmnElement="Task_ManualReview">
+        <dc:Bounds x="1370" y="364" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Approve Transaction -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_ApproveTransaction" bpmnElement="Task_ApproveTransaction">
+        <dc:Bounds x="1370" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Create Incident -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_CreateIncident" bpmnElement="Task_CreateIncident">
+        <dc:Bounds x="1530" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Notify Customer -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_NotifyCustomer" bpmnElement="Task_NotifyCustomer">
+        <dc:Bounds x="1690" y="257" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- End Event: Blocked High -->
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_BlockedHigh" bpmnElement="EndEvent_BlockedHigh">
+        <dc:Bounds x="1850" y="279" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1833" y="322" width="70" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Human Decision -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_HumanDecision" bpmnElement="Task_HumanDecision">
+        <dc:Bounds x="1530" y="364" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Gateway: Approve Or Reject -->
+      <bpmndi:BPMNShape id="BPMNShape_Gateway_ApproveOrReject" bpmnElement="Gateway_ApproveOrReject" isMarkerVisible="true">
+        <dc:Bounds x="1692" y="379" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1676" y="349" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Reject Transaction -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_RejectTransaction" bpmnElement="Task_RejectTransaction">
+        <dc:Bounds x="1800" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Manual Approve -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_ManualApprove" bpmnElement="Task_ManualApprove">
+        <dc:Bounds x="1800" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- End Event: Rejected -->
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_Rejected" bpmnElement="EndEvent_Rejected">
+        <dc:Bounds x="1962" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1946" y="485" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Update Rules -->
+      <bpmndi:BPMNShape id="BPMNShape_Task_UpdateRules" bpmnElement="Task_UpdateRules">
+        <dc:Bounds x="1960" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- End Event: Manual Approved -->
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_ManualApproved" bpmnElement="EndEvent_ManualApproved">
+        <dc:Bounds x="2120" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2104" y="395" width="68" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- End Event: Approved -->
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_Approved" bpmnElement="EndEvent_Approved">
+        <dc:Bounds x="1532" y="502" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1516" y="545" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Sequence Flows -->
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_01" bpmnElement="Flow_01">
+        <di:waypoint x="215" y="297" />
+        <di:waypoint x="270" y="297" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_02" bpmnElement="Flow_02">
+        <di:waypoint x="370" y="297" />
+        <di:waypoint x="430" y="297" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_03" bpmnElement="Flow_03">
+        <di:waypoint x="530" y="297" />
+        <di:waypoint x="585" y="297" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_04a" bpmnElement="Flow_04a">
+        <di:waypoint x="610" y="272" />
+        <di:waypoint x="610" y="140" />
+        <di:waypoint x="690" y="140" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="620" y="203" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_04b" bpmnElement="Flow_04b">
+        <di:waypoint x="610" y="322" />
+        <di:waypoint x="610" y="404" />
+        <di:waypoint x="690" y="404" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="617" y="360" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_05" bpmnElement="Flow_05">
+        <di:waypoint x="790" y="140" />
+        <di:waypoint x="850" y="140" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_06" bpmnElement="Flow_06">
+        <di:waypoint x="790" y="404" />
+        <di:waypoint x="830" y="404" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_07" bpmnElement="Flow_07">
+        <di:waypoint x="930" y="404" />
+        <di:waypoint x="970" y="404" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_08" bpmnElement="Flow_08">
+        <di:waypoint x="1070" y="404" />
+        <di:waypoint x="1110" y="404" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_09" bpmnElement="Flow_09">
+        <di:waypoint x="1210" y="404" />
+        <di:waypoint x="1265" y="404" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_10a" bpmnElement="Flow_10a">
+        <di:waypoint x="1290" y="379" />
+        <di:waypoint x="1290" y="297" />
+        <di:waypoint x="1370" y="297" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1310" y="340" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_10b" bpmnElement="Flow_10b">
+        <di:waypoint x="1315" y="404" />
+        <di:waypoint x="1370" y="404" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1326" y="386" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_10c" bpmnElement="Flow_10c">
+        <di:waypoint x="1290" y="429" />
+        <di:waypoint x="1290" y="520" />
+        <di:waypoint x="1370" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1310" y="485" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_11a" bpmnElement="Flow_11a">
+        <di:waypoint x="1470" y="297" />
+        <di:waypoint x="1530" y="297" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_11b" bpmnElement="Flow_11b">
+        <di:waypoint x="1470" y="404" />
+        <di:waypoint x="1530" y="404" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_11c" bpmnElement="Flow_11c">
+        <di:waypoint x="1470" y="520" />
+        <di:waypoint x="1532" y="520" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_12a" bpmnElement="Flow_12a">
+        <di:waypoint x="1630" y="297" />
+        <di:waypoint x="1690" y="297" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_12b" bpmnElement="Flow_12b">
+        <di:waypoint x="1630" y="404" />
+        <di:waypoint x="1692" y="404" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_13a" bpmnElement="Flow_13a">
+        <di:waypoint x="1790" y="297" />
+        <di:waypoint x="1850" y="297" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_13b" bpmnElement="Flow_13b">
+        <di:waypoint x="1717" y="429" />
+        <di:waypoint x="1717" y="460" />
+        <di:waypoint x="1800" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1734" y="442" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_13c" bpmnElement="Flow_13c">
+        <di:waypoint x="1717" y="379" />
+        <di:waypoint x="1717" y="360" />
+        <di:waypoint x="1800" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1732" y="340" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_14a" bpmnElement="Flow_14a">
+        <di:waypoint x="1900" y="460" />
+        <di:waypoint x="1962" y="460" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_14b" bpmnElement="Flow_14b">
+        <di:waypoint x="1900" y="370" />
+        <di:waypoint x="1960" y="370" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_15" bpmnElement="Flow_15">
+        <di:waypoint x="2060" y="370" />
+        <di:waypoint x="2120" y="370" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

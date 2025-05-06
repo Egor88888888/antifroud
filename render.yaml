@@ -1,0 +1,45 @@
+services:
+  # Backend API Service
+  - type: web
+    name: warevision-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm ci
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - fromGroup: warevision-env
+    healthCheckPath: /health
+    autoDeploy: true
+    
+  # PostgreSQL Database
+  - type: pserv
+    name: warevision-db
+    env: postgresql
+    plan: free
+    disk:
+      name: warevision-db-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 1
+    envVars:
+      - key: POSTGRES_USER
+        fromGroup: warevision-env
+      - key: POSTGRES_PASSWORD
+        fromGroup: warevision-env
+      - key: POSTGRES_DB
+        value: warevision
+
+envVarGroups:
+  - name: warevision-env
+    envVars:
+      - key: POSTGRES_USER
+        value: warevision
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true 
