@@ -11,34 +11,18 @@ services:
         value: production
       - key: PORT
         value: 10000
-      - fromGroup: warevision-env
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_8XF6iMvljUEI@ep-bold-paper-a4bu7bin-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - key: JWT_SECRET
+        fromGroup: warevision-env
+      - key: SESSION_SECRET
+        fromGroup: warevision-env
     healthCheckPath: /health
     autoDeploy: true
     
-  # PostgreSQL Database
-  - type: pserv
-    name: warevision-db
-    env: postgresql
-    plan: free
-    disk:
-      name: warevision-db-data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 1
-    envVars:
-      - key: POSTGRES_USER
-        fromGroup: warevision-env
-      - key: POSTGRES_PASSWORD
-        fromGroup: warevision-env
-      - key: POSTGRES_DB
-        value: warevision
-
 envVarGroups:
   - name: warevision-env
     envVars:
-      - key: POSTGRES_USER
-        value: warevision
-      - key: POSTGRES_PASSWORD
-        generateValue: true
       - key: JWT_SECRET
         generateValue: true
       - key: SESSION_SECRET
