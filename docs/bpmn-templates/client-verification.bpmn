@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_ClientVerification" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_ClientVerification" name="Процесс верификации клиента" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Получение заявки на проверку">
+      <bpmn:outgoing>Flow_01</bpmn:outgoing>
+    </bpmn:startEvent>
+    
+    <bpmn:task id="Task_InitialCheck" name="Первичная проверка данных">
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_02</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="2-5 минут" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_DataComplete" name="Данные полные?">
+      <bpmn:incoming>Flow_02</bpmn:incoming>
+      <bpmn:outgoing>Flow_03a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_03b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_RequestAdditionalData" name="Запрос дополнительных данных">
+      <bpmn:incoming>Flow_03a</bpmn:incoming>
+      <bpmn:outgoing>Flow_04</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1-2 дня" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Частично" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_IdentityVerification" name="Проверка личности">
+      <bpmn:incoming>Flow_03b</bpmn:incoming>
+      <bpmn:outgoing>Flow_05</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="5-10 минут" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_DocumentVerification" name="Верификация документов">
+      <bpmn:incoming>Flow_05</bpmn:incoming>
+      <bpmn:outgoing>Flow_06</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="10-15 минут" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Частично" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_RiskAssessment" name="Оценка рисков">
+      <bpmn:incoming>Flow_06</bpmn:incoming>
+      <bpmn:outgoing>Flow_07</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="5-7 минут" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_HighRisk" name="Высокий риск?">
+      <bpmn:incoming>Flow_07</bpmn:incoming>
+      <bpmn:outgoing>Flow_08a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_08b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_EnhancedDueDiligence" name="Углубленная проверка">
+      <bpmn:incoming>Flow_08a</bpmn:incoming>
+      <bpmn:outgoing>Flow_09</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="1-3 дня" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Нет" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_ApprovalDecision" name="Принятие решения">
+      <bpmn:incoming>Flow_08b</bpmn:incoming>
+      <bpmn:incoming>Flow_09</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="30 минут" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Частично" />
+    </bpmn:task>
+    
+    <bpmn:exclusiveGateway id="Gateway_Approved" name="Одобрено?">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11a</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:task id="Task_NotifyApproval" name="Уведомление об одобрении">
+      <bpmn:incoming>Flow_11a</bpmn:incoming>
+      <bpmn:outgoing>Flow_12a</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="2 минуты" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:task id="Task_NotifyRejection" name="Уведомление об отказе">
+      <bpmn:incoming>Flow_11b</bpmn:incoming>
+      <bpmn:outgoing>Flow_12b</bpmn:outgoing>
+      <bpmn:property id="Property_TaskTime" name="Время выполнения" camunda:value="2 минуты" />
+      <bpmn:property id="Property_Automated" name="Автоматизирован" camunda:value="Да" />
+    </bpmn:task>
+    
+    <bpmn:endEvent id="EndEvent_Approved" name="Заявка одобрена">
+      <bpmn:incoming>Flow_12a</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:endEvent id="EndEvent_Rejected" name="Заявка отклонена">
+      <bpmn:incoming>Flow_12b</bpmn:incoming>
+      <bpmn:incoming>Flow_04</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <!-- Sequence Flows -->
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="StartEvent_1" targetRef="Task_InitialCheck" />
+    <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_InitialCheck" targetRef="Gateway_DataComplete" />
+    <bpmn:sequenceFlow id="Flow_03a" name="Нет" sourceRef="Gateway_DataComplete" targetRef="Task_RequestAdditionalData" />
+    <bpmn:sequenceFlow id="Flow_03b" name="Да" sourceRef="Gateway_DataComplete" targetRef="Task_IdentityVerification" />
+    <bpmn:sequenceFlow id="Flow_04" name="Данные не предоставлены" sourceRef="Task_RequestAdditionalData" targetRef="EndEvent_Rejected" />
+    <bpmn:sequenceFlow id="Flow_05" sourceRef="Task_IdentityVerification" targetRef="Task_DocumentVerification" />
+    <bpmn:sequenceFlow id="Flow_06" sourceRef="Task_DocumentVerification" targetRef="Task_RiskAssessment" />
+    <bpmn:sequenceFlow id="Flow_07" sourceRef="Task_RiskAssessment" targetRef="Gateway_HighRisk" />
+    <bpmn:sequenceFlow id="Flow_08a" name="Да" sourceRef="Gateway_HighRisk" targetRef="Task_EnhancedDueDiligence" />
+    <bpmn:sequenceFlow id="Flow_08b" name="Нет" sourceRef="Gateway_HighRisk" targetRef="Task_ApprovalDecision" />
+    <bpmn:sequenceFlow id="Flow_09" sourceRef="Task_EnhancedDueDiligence" targetRef="Task_ApprovalDecision" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Task_ApprovalDecision" targetRef="Gateway_Approved" />
+    <bpmn:sequenceFlow id="Flow_11a" name="Да" sourceRef="Gateway_Approved" targetRef="Task_NotifyApproval" />
+    <bpmn:sequenceFlow id="Flow_11b" name="Нет" sourceRef="Gateway_Approved" targetRef="Task_NotifyRejection" />
+    <bpmn:sequenceFlow id="Flow_12a" sourceRef="Task_NotifyApproval" targetRef="EndEvent_Approved" />
+    <bpmn:sequenceFlow id="Flow_12b" sourceRef="Task_NotifyRejection" targetRef="EndEvent_Rejected" />
+  </bpmn:process>
+  
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_ClientVerification">
+      <!-- Start Event -->
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds x="156" y="191" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="130" y="234" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Initial Check -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_InitialCheck" bpmnElement="Task_InitialCheck">
+        <dc:Bounds x="244" y="169" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Gateway: Data Complete -->
+      <bpmndi:BPMNShape id="_BPMNShape_Gateway_DataComplete" bpmnElement="Gateway_DataComplete" isMarkerVisible="true">
+        <dc:Bounds x="399" y="184" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="380" y="154" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Request Additional Data -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_RequestAdditionalData" bpmnElement="Task_RequestAdditionalData">
+        <dc:Bounds x="504" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Identity Verification -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_IdentityVerification" bpmnElement="Task_IdentityVerification">
+        <dc:Bounds x="504" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Document Verification -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_DocumentVerification" bpmnElement="Task_DocumentVerification">
+        <dc:Bounds x="654" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Risk Assessment -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_RiskAssessment" bpmnElement="Task_RiskAssessment">
+        <dc:Bounds x="804" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Gateway: High Risk -->
+      <bpmndi:BPMNShape id="_BPMNShape_Gateway_HighRisk" bpmnElement="Gateway_HighRisk" isMarkerVisible="true">
+        <dc:Bounds x="954" y="275" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="943" y="245" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Enhanced Due Diligence -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_EnhancedDueDiligence" bpmnElement="Task_EnhancedDueDiligence">
+        <dc:Bounds x="1054" y="169" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Approval Decision -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_ApprovalDecision" bpmnElement="Task_ApprovalDecision">
+        <dc:Bounds x="1204" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Gateway: Approved -->
+      <bpmndi:BPMNShape id="_BPMNShape_Gateway_Approved" bpmnElement="Gateway_Approved" isMarkerVisible="true">
+        <dc:Bounds x="1354" y="275" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1352" y="245" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Notify Approval -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_NotifyApproval" bpmnElement="Task_NotifyApproval">
+        <dc:Bounds x="1454" y="169" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Task: Notify Rejection -->
+      <bpmndi:BPMNShape id="_BPMNShape_Task_NotifyRejection" bpmnElement="Task_NotifyRejection">
+        <dc:Bounds x="1454" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- End Event: Approved -->
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_Approved" bpmnElement="EndEvent_Approved">
+        <dc:Bounds x="1604" y="191" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1578" y="234" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- End Event: Rejected -->
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_Rejected" bpmnElement="EndEvent_Rejected">
+        <dc:Bounds x="1604" y="372" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1578" y="415" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Sequence Flows -->
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_01" bpmnElement="Flow_01">
+        <di:waypoint x="192" y="209" />
+        <di:waypoint x="244" y="209" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_02" bpmnElement="Flow_02">
+        <di:waypoint x="344" y="209" />
+        <di:waypoint x="399" y="209" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_03a" bpmnElement="Flow_03a">
+        <di:waypoint x="424" y="184" />
+        <di:waypoint x="424" y="120" />
+        <di:waypoint x="504" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="429" y="152" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_03b" bpmnElement="Flow_03b">
+        <di:waypoint x="424" y="234" />
+        <di:waypoint x="424" y="300" />
+        <di:waypoint x="504" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="430" y="267" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_04" bpmnElement="Flow_04">
+        <di:waypoint x="604" y="120" />
+        <di:waypoint x="1622" y="120" />
+        <di:waypoint x="1622" y="372" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="795" y="86" width="143" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_05" bpmnElement="Flow_05">
+        <di:waypoint x="604" y="300" />
+        <di:waypoint x="654" y="300" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_06" bpmnElement="Flow_06">
+        <di:waypoint x="754" y="300" />
+        <di:waypoint x="804" y="300" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_07" bpmnElement="Flow_07">
+        <di:waypoint x="904" y="300" />
+        <di:waypoint x="954" y="300" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_08a" bpmnElement="Flow_08a">
+        <di:waypoint x="979" y="275" />
+        <di:waypoint x="979" y="209" />
+        <di:waypoint x="1054" y="209" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="985" y="243" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_08b" bpmnElement="Flow_08b">
+        <di:waypoint x="1004" y="300" />
+        <di:waypoint x="1204" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1097" y="282" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_09" bpmnElement="Flow_09">
+        <di:waypoint x="1154" y="209" />
+        <di:waypoint x="1254" y="209" />
+        <di:waypoint x="1254" y="260" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_10" bpmnElement="Flow_10">
+        <di:waypoint x="1304" y="300" />
+        <di:waypoint x="1354" y="300" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_11a" bpmnElement="Flow_11a">
+        <di:waypoint x="1379" y="275" />
+        <di:waypoint x="1379" y="209" />
+        <di:waypoint x="1454" y="209" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1385" y="243" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_11b" bpmnElement="Flow_11b">
+        <di:waypoint x="1379" y="325" />
+        <di:waypoint x="1379" y="390" />
+        <di:waypoint x="1454" y="390" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1385" y="357" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_12a" bpmnElement="Flow_12a">
+        <di:waypoint x="1554" y="209" />
+        <di:waypoint x="1604" y="209" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="_BPMNConnection_Flow_12b" bpmnElement="Flow_12b">
+        <di:waypoint x="1554" y="390" />
+        <di:waypoint x="1604" y="390" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 
