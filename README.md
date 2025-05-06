@@ -285,3 +285,78 @@ npm run dev
 При возникновении вопросов обращайтесь: [support@warevision.example.com]
 
 © 2025 WareVision Anti-Fraud System 
+
+BPMN редактор и симулятор бизнес-процессов для антифрод-системы с функциями моделирования и визуализации.
+
+## Демо
+
+- Фронтенд: [https://egor88888888.github.io/antifroud/](https://egor88888888.github.io/antifroud/)
+- API: [https://antifroud-1.onrender.com/api](https://antifroud-1.onrender.com/api)
+
+## Особенности
+
+- BPMN редактор с возможностью разработки и редактирования бизнес-процессов
+- Симулятор процессов в реальном времени
+- Статистика выполнения и визуализация
+- Различные сценарии симуляции
+
+## Развертывание на Vercel
+
+### Предварительные требования
+
+- Аккаунт на [Vercel](https://vercel.com)
+- Установленный [Vercel CLI](https://vercel.com/cli)
+
+### Шаги по развертыванию
+
+1. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/Egor88888888/antifroud.git
+   cd antifroud
+   ```
+
+2. Установите Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
+
+3. Войдите в свой аккаунт Vercel:
+   ```bash
+   vercel login
+   ```
+
+4. Разверните проект:
+   ```bash
+   vercel
+   ```
+
+5. Следуйте инструкциям в терминале. Важные параметры:
+   - Укажите директорию проекта: `.` (текущая)
+   - Настройте переменные окружения:
+     - `DATABASE_URL`: URL вашей базы данных Neon
+     - `JWT_SECRET`: Секретный ключ для JWT-токенов
+     - `SESSION_SECRET`: Секретный ключ для сессий
+
+6. Для производственного развертывания:
+   ```bash
+   vercel --prod
+   ```
+
+## Локальная разработка
+
+1. Установите зависимости:
+   ```bash
+   npm install
+   ```
+
+2. Запустите в режиме разработки:
+   ```bash
+   npm run dev
+   ```
+
+## Структура проекта
+
+- `frontend/`: React-приложение с BPMN-редактором
+- `backend/`: Node.js API сервер
+- `vercel.json`: Конфигурация для Vercel
+- `package.json`: Корневой файл проекта 
